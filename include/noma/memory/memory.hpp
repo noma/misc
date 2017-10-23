@@ -8,6 +8,7 @@
 #include <algorithm>
 #include <atomic>
 #include <cassert>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <stdlib.h> // posix_memalign
@@ -138,6 +139,12 @@ public:
 
 		sub_allocation(allocated_sizes_.at(vptr));
 		allocated_sizes_.erase(vptr);
+	}
+
+	template<typename T>
+	std::function<void(T*)> deleter()
+	{
+		return std::bind(&aligned::free<T>, this, std::placeholders::_1);
 	}
 
 private:
